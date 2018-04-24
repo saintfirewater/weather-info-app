@@ -61,12 +61,13 @@ class App extends Component {
     fetch(url)
     .then(res => res.json())
     .then((data) => {
+      // 2) 그다음 
       currentTemperature = data.response.body.items.item[5].obsrValue;
       console.log(currentTemperature);
       return currentTemperature;
     });
 
-    console.log(currentTemperature);
+    // 1) 비동기라 여기가 먼저 불림 console.log(currentTemperature);
   }
   
 
