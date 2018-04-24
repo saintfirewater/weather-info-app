@@ -1,9 +1,10 @@
-import { createActions } from 'redux-actions';
+import { createAction } from 'redux-actions';
 
-export const INSERT = 'action/INSERT';
-export const REMOVE = 'action/REMOVE';
+export const INSERT = 'INSERT';
+export const REMOVE = 'REMOVE';
 
-export const insert = createActions(INSERT);
-export const remove = createActions(REMOVE, id => id);
+
+export const insert = createAction(INSERT);
+export const remove = createAction(REMOVE, id => id);
 
 

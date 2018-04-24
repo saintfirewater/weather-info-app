@@ -10,7 +10,7 @@ ul {
 }
 
 /* Style the list items */
-ul li {
+.city-weater-element {
   cursor: pointer;
   position: relative;
   padding-left: 12px;
@@ -30,11 +30,11 @@ ul li {
 }
 
 /* Set all odd list items to a different color (zebra-stripes) */
-ul li:nth-child(odd) {
+.city-weater-element :nth-child(odd) {
   background: #f9f9f9;
 }
 
 /* Darker background-color on hover */
-ul li:hover {
+.city-weater-element :hover {
   background: #ddd;
 }
