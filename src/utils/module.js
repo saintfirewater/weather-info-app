@@ -2,6 +2,28 @@ import cityCoordList from './cityCoord';
 import firstCityList from './firstCities';
 import Constants from './Constants';
 
+function getCurrentDate() {
+  let date = new Date();
+  let year = date.getFullYear();
+  let month = (date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1);
+  let day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+
+  return (year + '' + month + '' + day);
+}
+
+function getCurrentTime() {
+  let time = new Date();
+  let hour = time.getHours();
+  let minute = time.getMinutes();
+
+  hour = minute <= 40 ? (hour-1) : hour;
+  if(hour < 10) {
+    hour = '0' + hour;
+  }
+
+  return (hour + '00');
+}
+
 function findCity(searchInput) {
   // const testUserInput3 = '송도';
   
@@ -40,29 +62,6 @@ function findCity(searchInput) {
     }
   }
   return city;
-}
-
-function getCurrentDate() {
-  let date = new Date().toLocaleDateString();
-  let year = date.substr(0, 4);
-  let month = date.indexOf(5) !== '1' ? '0' + date.substr(6, 1) : date.substr(5, 2);;
-  let day = date.substr(9, 2);
-
-  return (year + month + day); /////
-}
-
-function getCurrentTime() {
-  let time = new Date();
-  let hour = time.getHours();
-  let minute = time.getMinutes();
-
-  hour = minute <= 40 ? (hour-1) : hour;
-
-  if(hour < 10) {
-    hour = '0' + hour;
-  }
-
-  return (hour + '00');
 }
 
 function generateURL(currentDate, currentTime, x, y) {
