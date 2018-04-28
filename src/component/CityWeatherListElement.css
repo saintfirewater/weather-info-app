@@ -38,3 +38,10 @@ ul {
 .city-weater-element :hover {
   background: #ddd;
 }
+
+.li-button {
+  float: right;
+  background: transparent;
+  font-size: 12px;
+  border: 0px;
+}

@@ -27,7 +27,6 @@ class SearchCityWeatherContainer extends React.Component {
   };
 
   handleSearchAndInsert() { // 분리 할 수 없을까?
-
     const userInput = this.state.input;
 
     let result = '';
@@ -42,10 +41,7 @@ class SearchCityWeatherContainer extends React.Component {
           cityName: city.first + " " + city.second + " " + city.third,
           cityTemperature : temperature
         }
-        // console.log('1');
-        // console.log(this.props);
-        // console.log('2');
-        // console.log(item);
+        
         this.props.Actions.insert(item);
 
         this.setState({input: ''});
@@ -53,8 +49,6 @@ class SearchCityWeatherContainer extends React.Component {
   }
 
   handleRemove(id) {
-    console.log('id');
-    console.log(id);
     this.props.Actions.remove(id);
   }
   

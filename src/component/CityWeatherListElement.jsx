@@ -2,8 +2,6 @@ import React from 'react';
 import './CityWeatherListElement.css'
 
 function CityWeatherListElement(props) {
-  console.log('props');
-  console.log(props);
 
   const{ handleRemove } = props;
 
@@ -13,12 +11,14 @@ function CityWeatherListElement(props) {
     cityTemperature
   } = props.cityWeatherInfo;
 
-  return (  ////
+  return (
     <li 
-      onDoubleClick={() => handleRemove(id)} 
       className="city-weater-element"
     >
       {cityName + ' ' + cityTemperature + '°C'}
+      <button 
+        onClick={() => handleRemove(id)}
+        className="li-button">X</button>
     </li>
   );
 }
