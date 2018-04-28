@@ -17,6 +17,7 @@ class SearchCityWeatherContainer extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSearchAndInsert = this.handleSearchAndInsert.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
+    this.handleEnterKeyEvent = this.handleEnterKeyEvent.bind(this);
   }
 
   handleInputChange(event) {
@@ -51,12 +52,19 @@ class SearchCityWeatherContainer extends React.Component {
   handleRemove(id) {
     this.props.Actions.remove(id);
   }
+
+  handleEnterKeyEvent(event) {
+    if(event.key === 'Enter') {
+      this.handleSearchAndInsert();
+    }
+  }
   
   render() {
     const { 
       handleInputChange, 
       handleSearchAndInsert,
-      handleRemove
+      handleRemove,
+      handleEnterKeyEvent
     } = this;
 
     const {
@@ -70,6 +78,7 @@ class SearchCityWeatherContainer extends React.Component {
         handleInputChange={handleInputChange}
         handleSearchAndInsert={handleSearchAndInsert} 
         handleRemove={handleRemove}
+        handleEnterKeyEvent={handleEnterKeyEvent}
       />
     );
   }

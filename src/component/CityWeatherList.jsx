@@ -16,14 +16,15 @@ class CityWeatherList extends React.Component {
       handleInputChange, 
       handleSearchAndInsert, 
       handleRemove,
-      inputValue
+      inputValue,
+      handleEnterKeyEvent
     } = this.props;
 
     return (
       <div id="myDIV" className="header">
         <h2 style={{margin:'5px'}}>Weather</h2>
         <input 
-          
+          onKeyPress={handleEnterKeyEvent}
           value={inputValue}
           onChange={handleInputChange} 
           type="text" 
