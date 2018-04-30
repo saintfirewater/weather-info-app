@@ -17,14 +17,16 @@ let initialState = Map({
 })
 
 export default handleActions({
-  [INSERT]: (state, action) => { ///Map size:3 arraynode..?
+  [INSERT]: (state, action) => { 
     const newItem = Map({
       id: id++,
       cityName: action.payload.cityName, 
-      cityTemperature: action.payload.cityTemperature
+      cityTemperature: action.payload.cityTemperature,
+      citySkyTypeCode: action.payload.citySkyTypeCode,
+      cityRainTypeCode: action.payload.cityRainTypeCode,
+      cityLightening: action.payload.cityLightening
     });
-    // console.log('handleActions');
-    // console.log(newItem);
+    
     return state.update('cityList', cityList => cityList.push(newItem));
   },
   [REMOVE]: (state, action) => {

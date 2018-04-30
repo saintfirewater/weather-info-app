@@ -38,11 +38,19 @@ class SearchCityWeatherContainer extends React.Component {
         
         let city = result.city;
         let temperature = result.currentTemperature;
+        let skyTypeCode = result.currentSkyTypeCode;
+        let rainTypeCode = result.currentRainTypeCode;
+        let lightening = result.currentLightening;
+        
         let item = {
           cityName: city.first + " " + city.second + " " + city.third,
-          cityTemperature : temperature
+          cityTemperature: temperature,
+          citySkyTypeCode: skyTypeCode,
+          cityRainTypeCode: rainTypeCode,
+          cityLightening: lightening
         }
-        
+        console.log('item');
+        console.log(item);
         this.props.Actions.insert(item);
 
         this.setState({input: ''});

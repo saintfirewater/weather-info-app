@@ -22,3 +22,6 @@ yarn-error.log*
 
 # service key
 /src/utils/Constants.js
+
+# weather info
+/info.txt

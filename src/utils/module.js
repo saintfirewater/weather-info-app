@@ -99,7 +99,14 @@ function generateURL(currentDate, currentTime, x, y) {
   return url;            
 }
 
-async function getTemperatureAndCity(searchInput) {
+async function apiCallToGetWeatherInfo(searchInput) {
+
+  const {
+    LGT,
+    PTY,
+    SKY,
+    T1H
+        } = Constants;
 
   console.log(searchInput);
   const currentDate = getCurrentDate();
@@ -111,26 +118,36 @@ async function getTemperatureAndCity(searchInput) {
   const url = generateURL(currentDate, currentTime, cityCoordX, cityCoordY);
   
   console.log(url);
-  let currentTemperature = await fetch(url) // 0)
-                                  .then(res => res.json())
-                                  .then((data) => {
-                                    // 2) 그다음 
-                                    currentTemperature = data.response.body.items.item[5].obsrValue;
-                                    console.log(currentTemperature);
-                                    return currentTemperature;
-                                  });
+  
+  let currentLightening = '';
+  let currentTemperature = ''; 
+  let currentRainTypeCode = '';
+  let currentSkyTypeCode = '';
 
-  // 1) 비동기라 여기가 먼저 불림 console.log(currentTemperature);
+  await fetch(url)
+  .then(res => res.json())
+  .then((data) => {
+    currentLightening = data.response.body.items.item[LGT].obsrValue;
+    currentTemperature = data.response.body.items.item[T1H].obsrValue;
+    currentRainTypeCode = data.response.body.items.item[PTY].obsrValue;
+    currentSkyTypeCode = data.response.body.items.item[SKY].obsrValue;
+    console.log(currentLightening);
+    console.log(currentRainTypeCode);
+    console.log(currentSkyTypeCode);
+    console.log(currentTemperature);
+  });
   
   return {
-    currentTemperature : currentTemperature,
+    currentLightening: currentLightening,
+    currentTemperature: currentTemperature,
+    currentRainTypeCode: currentRainTypeCode,
+    currentSkyTypeCode: currentSkyTypeCode,
     city: city
   };
 }
 
-////////////
 function getSearchResult(searchInput) {
-  let result = getTemperatureAndCity(searchInput);
+  let result = apiCallToGetWeatherInfo(searchInput);
   return result;
 }
 

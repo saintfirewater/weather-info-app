@@ -6,11 +6,9 @@ import CityWeatherListElement from './CityWeatherListElement';
 class CityWeatherList extends React.Component {
   constructor(props) {
     super(props);
-    
   }
   
   render() {
-    // const testList = ['Hit the gym', 'Pay bills', 'Meet George', 'Buy eggs'];
     const {
       cityList, 
       handleInputChange, 
@@ -43,7 +41,6 @@ class CityWeatherList extends React.Component {
       </div>
     );
   }
-
 }
 
 export default CityWeatherList;
