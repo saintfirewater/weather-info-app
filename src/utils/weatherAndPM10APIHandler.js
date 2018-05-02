@@ -62,6 +62,46 @@ function findCity(searchInput) {
   return city;
 }
 
+function mapFirstToSidoName(first) {
+  
+  const frontTwoWordCities = [
+    '서울특별시',
+    '부산광역시',
+    '대구광역시',
+    '인천광역시',
+    '광주광역시',
+    '대전광역시',
+    '울산광역시',
+    '세종특별자치시',
+    '경기도',
+    '강원도',
+    '제주특별자치도'
+  ];
+  const midTwoWordCities = [
+    '충청북도',
+    '충청남도',
+    '전라북도',
+    '전라남도',
+    '경상북도',
+    '경상남도'
+  ];
+
+  const ieodo = '이어도';
+
+  let sidoName = '';
+
+  if(first === ieodo) {
+    sidoName = ieodo;
+  }
+  else if(frontTwoWordCities.includes(first)) {
+    sidoName = first.substr(0, 2);
+  }
+  else {
+    sidoName = first.charAt(0) + first.charAt(2);
+  }
+  return sidoName;
+}
+
 function generatePM10URL(sidoName) {
   const {
     PM10_URL,
@@ -117,46 +157,6 @@ function generateWeatherURL(currentDate, currentTime, x, y) {
             ;
 
   return url;            
-}
-
-function mapFirstToSidoName(first) {
-  
-  const frontTwoWordCities = [
-    '서울특별시',
-    '부산광역시',
-    '대구광역시',
-    '인천광역시',
-    '광주광역시',
-    '대전광역시',
-    '울산광역시',
-    '세종특별자치시',
-    '경기도',
-    '강원도',
-    '제주특별자치도'
-  ];
-  const midTwoWordCities = [
-    '충청북도',
-    '충청남도',
-    '전라북도',
-    '전라남도',
-    '경상북도',
-    '경상남도'
-  ];
-
-  const ieodo = '이어도';
-
-  let sidoName = '';
-
-  if(first === ieodo) {
-    sidoName = ieodo;
-  }
-  else if(frontTwoWordCities.includes(first)) {
-    sidoName = first.substr(0, 2);
-  }
-  else {
-    sidoName = first.charAt(0) + first.charAt(2);
-  }
-  return sidoName;
 }
 
 async function apiCallToGetWeatherInfo(searchInput) {

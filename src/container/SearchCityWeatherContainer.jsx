@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import * as Actions from '../store/modules/duckToHandleAction';
 import { bindActionCreators } from 'redux';
 import CityWeatherList from '../component/CityWeatherList';
-import getSearchResult from '../utils/module';
+import getSearchResult from '../utils/weatherAndPM10APIHandler';
 import { Map } from 'immutable';
 
 class SearchCityWeatherContainer extends React.Component {
