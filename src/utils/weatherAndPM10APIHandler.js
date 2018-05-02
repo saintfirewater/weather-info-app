@@ -159,7 +159,7 @@ function generateWeatherURL(currentDate, currentTime, x, y) {
   return url;            
 }
 
-async function apiCallToGetWeatherInfo(searchInput) {
+async function apiCallToGetWeatherAndPM10Info(searchInput) {
 
   const {
     LGT,
@@ -168,8 +168,6 @@ async function apiCallToGetWeatherInfo(searchInput) {
     T1H
         } = Constants;
   
-  console.log('searchInput');
-  console.log(searchInput);
   const currentDate = getCurrentDate();
   const currentTime = getCurrentTime();
   const city = findCity(searchInput);
@@ -184,13 +182,12 @@ async function apiCallToGetWeatherInfo(searchInput) {
   console.log(weatherUrl);
   console.log(pm10Url);
   
+  let apiCallResults = [];
   let currentLightening = '';
   let currentTemperature = ''; 
   let currentRainTypeCode = '';
   let currentSkyTypeCode = '';
   let currentPM10 = '';
-
-  let apiCallResults = [];
   
   await Promise.all([fetch(weatherUrl), fetch(pm10Url)])
         .then(responses => responses.map(res => res.json()))
@@ -198,14 +195,15 @@ async function apiCallToGetWeatherInfo(searchInput) {
           apiCallResults.push(weatherResult);
           apiCallResults.push(pm10Result);
         })
-
   await apiCallResults[0].then(weatherResult => {
     console.log('weatherResult');
     console.log(weatherResult);
-    currentLightening = weatherResult.response.body.items.item[LGT].obsrValue;
-    currentTemperature = weatherResult.response.body.items.item[T1H].obsrValue;
-    currentRainTypeCode = weatherResult.response.body.items.item[PTY].obsrValue;
-    currentSkyTypeCode = weatherResult.response.body.items.item[SKY].obsrValue;
+
+    let weatherInfoItem = weatherResult.response.body.items.item; 
+    currentLightening = weatherInfoItem[LGT].obsrValue;
+    currentTemperature = weatherInfoItem[T1H].obsrValue;
+    currentRainTypeCode = weatherInfoItem[PTY].obsrValue;
+    currentSkyTypeCode = weatherInfoItem[SKY].obsrValue;
   })
   await apiCallResults[1].then(pm10Result => {
     console.log('pm10Result');
@@ -223,7 +221,6 @@ async function apiCallToGetWeatherInfo(searchInput) {
     console.log('currentPM10');
     console.log(currentPM10);
   })
-
   
   return {
     currentLightening: currentLightening,
@@ -236,7 +233,7 @@ async function apiCallToGetWeatherInfo(searchInput) {
 }
 
 function getSearchResult(searchInput) {
-  let result = apiCallToGetWeatherInfo(searchInput);
+  let result = apiCallToGetWeatherAndPM10Info(searchInput);
   return result;
 }
 
