@@ -1,2 +1,6 @@
 0 리스트 다른 정보들 보이게 하기
 0-1. 하늘상태/강수형태/낙뢰 ===(종합)===> 하늘형태 li 에 띄우기
+1. 미세먼지 api call
+미세먼지 api의 res를 처리하쟝
+    주소 first 로 sidoName
+    city 에 second, third 등 중 구 이름 있으면 찾고 없으면 맨 처음 items[0]

@@ -25,7 +25,6 @@ function getCurrentTime() {
 }
 
 function findCity(searchInput) {
-  // const testUserInput3 = '송도';
   
   let userInput = searchInput;
   let isFirst = false;
@@ -40,7 +39,6 @@ function findCity(searchInput) {
     }
   }
 
-  // let first = isFirst ? firstCityName : '';
   let second = '';
   let third = '';
 
@@ -64,11 +62,33 @@ function findCity(searchInput) {
   return city;
 }
 
-function generateURL(currentDate, currentTime, x, y) {
+function generatePM10URL(sidoName) {
+  const {
+    PM10_URL,
+    SERVICE_KEY,
+    SEARCH_CONDITION,
+    PAGE_NUMBER, 
+    NUMBER_OF_ROWS,
+    TYPE
+  } = Constants;
+
+  const url = PM10_URL
+            + 'sidoName=' + sidoName
+            + '&searchCondition=' + SEARCH_CONDITION
+            + '&pageNo=' + PAGE_NUMBER
+            + '&numOfRows=' + NUMBER_OF_ROWS
+            + '&ServiceKey=' + SERVICE_KEY
+            + '&_returnType=' + TYPE
+            ;
+  
+  return url;
+}
+
+function generateWeatherURL(currentDate, currentTime, x, y) {
   
   const { 
     SERVICE_KEY, 
-    URL, 
+    WEATHER_URL, 
     PAGE_NUMBER, 
     NUMBER_OF_ROWS, 
     TYPE
@@ -85,7 +105,7 @@ function generateURL(currentDate, currentTime, x, y) {
   const cityCoordX = x;
   const cityCoordY = y;
 
-  const url = URL 
+  const url = WEATHER_URL 
             + 'ServiceKey=' + serviceKey 
             + '&base_date=' + baseDate 
             + '&base_time=' + baseTime 
@@ -99,6 +119,46 @@ function generateURL(currentDate, currentTime, x, y) {
   return url;            
 }
 
+function mapFirstToSidoName(first) {
+  
+  const frontTwoWordCities = [
+    '서울특별시',
+    '부산광역시',
+    '대구광역시',
+    '인천광역시',
+    '광주광역시',
+    '대전광역시',
+    '울산광역시',
+    '세종특별자치시',
+    '경기도',
+    '강원도',
+    '제주특별자치도'
+  ];
+  const midTwoWordCities = [
+    '충청북도',
+    '충청남도',
+    '전라북도',
+    '전라남도',
+    '경상북도',
+    '경상남도'
+  ];
+
+  const ieodo = '이어도';
+
+  let sidoName = '';
+
+  if(first === ieodo) {
+    sidoName = ieodo;
+  }
+  else if(frontTwoWordCities.includes(first)) {
+    sidoName = first.substr(0, 2);
+  }
+  else {
+    sidoName = first.charAt(0) + first.charAt(2);
+  }
+  return sidoName;
+}
+
 async function apiCallToGetWeatherInfo(searchInput) {
 
   const {
@@ -107,41 +167,70 @@ async function apiCallToGetWeatherInfo(searchInput) {
     SKY,
     T1H
         } = Constants;
-
+  
+  console.log('searchInput');
   console.log(searchInput);
   const currentDate = getCurrentDate();
   const currentTime = getCurrentTime();
   const city = findCity(searchInput);
   const cityCoordX = city.X;
   const cityCoordY = city.Y;
+  const sidoName = mapFirstToSidoName(city.first);
 
-  const url = generateURL(currentDate, currentTime, cityCoordX, cityCoordY);
+  const weatherUrl = generateWeatherURL(currentDate, currentTime, cityCoordX, cityCoordY);
+  const pm10Url = generatePM10URL(sidoName);
   
-  console.log(url);
+  console.log('url s');
+  console.log(weatherUrl);
+  console.log(pm10Url);
   
   let currentLightening = '';
   let currentTemperature = ''; 
   let currentRainTypeCode = '';
   let currentSkyTypeCode = '';
+  let currentPM10 = '';
 
-  await fetch(url)
-  .then(res => res.json())
-  .then((data) => {
-    currentLightening = data.response.body.items.item[LGT].obsrValue;
-    currentTemperature = data.response.body.items.item[T1H].obsrValue;
-    currentRainTypeCode = data.response.body.items.item[PTY].obsrValue;
-    currentSkyTypeCode = data.response.body.items.item[SKY].obsrValue;
-    console.log(currentLightening);
-    console.log(currentRainTypeCode);
-    console.log(currentSkyTypeCode);
-    console.log(currentTemperature);
-  });
+  let apiCallResults = [];
+  
+  await Promise.all([fetch(weatherUrl), fetch(pm10Url)])
+        .then(responses => responses.map(res => res.json()))
+        .then(([weatherResult, pm10Result]) => {
+          apiCallResults.push(weatherResult);
+          apiCallResults.push(pm10Result);
+        })
+
+  await apiCallResults[0].then(weatherResult => {
+    console.log('weatherResult');
+    console.log(weatherResult);
+    currentLightening = weatherResult.response.body.items.item[LGT].obsrValue;
+    currentTemperature = weatherResult.response.body.items.item[T1H].obsrValue;
+    currentRainTypeCode = weatherResult.response.body.items.item[PTY].obsrValue;
+    currentSkyTypeCode = weatherResult.response.body.items.item[SKY].obsrValue;
+  })
+  await apiCallResults[1].then(pm10Result => {
+    console.log('pm10Result');
+    console.log(pm10Result);
+
+    let airInfoOfTheCity = '';
+    if(city.third || city.second) {
+      airInfoOfTheCity = pm10Result.list.filter(item => city.second.includes(item.cityName))[0];
+    }
+    else {
+      airInfoOfTheCity = pm10Result.list[0];
+    }
+
+    currentPM10 = airInfoOfTheCity.pm10Value;
+    console.log('currentPM10');
+    console.log(currentPM10);
+  })
+
   
   return {
     currentLightening: currentLightening,
     currentTemperature: currentTemperature,
     currentRainTypeCode: currentRainTypeCode,
     currentSkyTypeCode: currentSkyTypeCode,
+    currentPM10: currentPM10,
     city: city
   };
 }

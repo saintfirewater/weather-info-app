@@ -24,7 +24,7 @@ class SearchCityWeatherContainer extends React.Component {
     let value = event.target.value;
     this.setState({
       input: value
-    }); // 서울
+    }); 
   };
 
   handleSearchAndInsert() { // 분리 할 수 없을까?
@@ -41,13 +41,15 @@ class SearchCityWeatherContainer extends React.Component {
         let skyTypeCode = result.currentSkyTypeCode;
         let rainTypeCode = result.currentRainTypeCode;
         let lightening = result.currentLightening;
+        let pm10Value = result.currentPM10;
         
         let item = {
           cityName: city.first + " " + city.second + " " + city.third,
           cityTemperature: temperature,
           citySkyTypeCode: skyTypeCode,
           cityRainTypeCode: rainTypeCode,
-          cityLightening: lightening
+          cityLightening: lightening,
+          cityPM10Value: pm10Value
         }
         console.log('item');
         console.log(item);

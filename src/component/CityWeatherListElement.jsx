@@ -26,7 +26,8 @@ class CityWeatherListElement extends React.Component {
       cityTemperature,
       citySkyTypeCode,
       cityRainTypeCode,
-      cityLightening
+      cityLightening,
+      cityPM10Value
     } = this.props.cityWeatherInfo;
   
     // 하늘 형태 이미지
@@ -60,12 +61,32 @@ class CityWeatherListElement extends React.Component {
     else {
       //something prob
     }
+
+    // pm10 value categorize
+    let pm10Class = '';
+    /* - 미세먼지
+          0~30   좋음
+          31~80  보통
+          81~150 나쁨
+          151~   매우나쁨 */
+    if(cityPM10Value < 31) {
+      pm10Class = '좋음';
+    }
+    else if(cityPM10Value > 30 && cityPM10Value < 81) {
+      pm10Class = '보통';
+    }
+    else if(cityPM10Value > 80 && cityPM10Value <151) {
+      pm10Class = '나쁨';
+    }
+    else if(cityPM10Value > 150) {
+      pm10Class = '매우나쁨';
+    }
     
     return (
       <li 
         className="city-weater-element"
       >
-        {cityName + ' ' + cityTemperature + '°C' }
+        {cityName + ' ' + cityTemperature + '°C' + ' ' + '미세먼지' + ' ' + pm10Class}
         <img 
           src={imgSrc}
           className='weather-icon'

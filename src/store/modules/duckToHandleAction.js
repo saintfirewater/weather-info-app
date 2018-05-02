@@ -24,7 +24,8 @@ export default handleActions({
       cityTemperature: action.payload.cityTemperature,
       citySkyTypeCode: action.payload.citySkyTypeCode,
       cityRainTypeCode: action.payload.cityRainTypeCode,
-      cityLightening: action.payload.cityLightening
+      cityLightening: action.payload.cityLightening,
+      cityPM10Value: action.payload.cityPM10Value
     });
     
     return state.update('cityList', cityList => cityList.push(newItem));
