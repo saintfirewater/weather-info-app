@@ -25,7 +25,6 @@ function getCurrentTime() {
 }
 
 function findCity(searchInput) {
-  
   let userInput = searchInput;
   let isFirst = false;
   let firstCityName = '';
@@ -57,7 +56,11 @@ function findCity(searchInput) {
       if(second.includes(userInput) || third.includes(userInput)) {
         break;
       }
+      city = '';
     }
+  }
+  if(city === '') {
+    city = undefined;
   }
   return city;
 }
@@ -74,8 +77,7 @@ function mapFirstToSidoName(first) {
     '울산광역시',
     '세종특별자치시',
     '경기도',
-    '강원도',
-    '제주특별자치도'
+    '강원도'
   ];
   const midTwoWordCities = [
     '충청북도',
@@ -90,8 +92,8 @@ function mapFirstToSidoName(first) {
 
   let sidoName = '';
 
-  if(first === ieodo) {
-    sidoName = ieodo;
+  if(first === ieodo || first === '제주특별자치도') { //제주도 api 요청 됨. But item이 없음.
+    sidoName = '전남';
   }
   else if(frontTwoWordCities.includes(first)) {
     sidoName = first.substr(0, 2);
@@ -100,28 +102,6 @@ function mapFirstToSidoName(first) {
     sidoName = first.charAt(0) + first.charAt(2);
   }
   return sidoName;
-}
-
-function generatePM10URL(sidoName) {
-  const {
-    PM10_URL,
-    SERVICE_KEY,
-    SEARCH_CONDITION,
-    PAGE_NUMBER, 
-    NUMBER_OF_ROWS,
-    TYPE
-  } = Constants;
-
-  const url = PM10_URL
-            + 'sidoName=' + sidoName
-            + '&searchCondition=' + SEARCH_CONDITION
-            + '&pageNo=' + PAGE_NUMBER
-            + '&numOfRows=' + NUMBER_OF_ROWS
-            + '&ServiceKey=' + SERVICE_KEY
-            + '&_returnType=' + TYPE
-            ;
-  
-  return url;
 }
 
 function generateWeatherURL(currentDate, currentTime, x, y) {
@@ -159,6 +139,28 @@ function generateWeatherURL(currentDate, currentTime, x, y) {
   return url;            
 }
 
+function generatePM10URL(sidoName) {
+  const {
+    PM10_URL,
+    SERVICE_KEY,
+    SEARCH_CONDITION,
+    PAGE_NUMBER, 
+    NUMBER_OF_ROWS,
+    TYPE
+  } = Constants;
+
+  const url = PM10_URL
+            + 'sidoName=' + sidoName
+            + '&searchCondition=' + SEARCH_CONDITION
+            + '&pageNo=' + PAGE_NUMBER
+            + '&numOfRows=' + NUMBER_OF_ROWS
+            + '&ServiceKey=' + SERVICE_KEY
+            + '&_returnType=' + TYPE
+            ;
+  
+  return url;
+}
+
 async function apiCallToGetWeatherAndPM10Info(searchInput) {
 
   const {
@@ -171,6 +173,11 @@ async function apiCallToGetWeatherAndPM10Info(searchInput) {
   const currentDate = getCurrentDate();
   const currentTime = getCurrentTime();
   const city = findCity(searchInput);
+
+  if(city === undefined) {
+    return null;
+  }
+
   const cityCoordX = city.X;
   const cityCoordY = city.Y;
   const sidoName = mapFirstToSidoName(city.first);
@@ -210,8 +217,14 @@ async function apiCallToGetWeatherAndPM10Info(searchInput) {
     console.log(pm10Result);
 
     let airInfoOfTheCity = '';
-    if(city.third || city.second) {
+    if(city.first === '이어도') {
+      airInfoOfTheCity = pm10Result.list[0];
+    }
+    else if(city.third || city.second) {
       airInfoOfTheCity = pm10Result.list.filter(item => city.second.includes(item.cityName))[0];
+      if(airInfoOfTheCity === undefined) { // 없는 곳이 있음 ex 완도군 => 예외처리
+        airInfoOfTheCity = pm10Result.list[0]; 
+      }
     }
     else {
       airInfoOfTheCity = pm10Result.list[0];

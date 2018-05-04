@@ -7,7 +7,6 @@ import snow from '../resource/image/눈.svg'
 import rain from '../resource/image/비.svg';
 import cloudy from '../resource/image/흐림.svg';
 import sleet from '../resource/image/진눈깨비.svg'
-// import  weatherInfoIcon from '../resource/image';
 import './CityWeatherListElement.css'
 
 class CityWeatherListElement extends React.Component {
@@ -31,7 +30,6 @@ class CityWeatherListElement extends React.Component {
     } = this.props.cityWeatherInfo;
   
     // 하늘 형태 이미지
-    // let imgSrc = '../resource/image/';
     let imgSrc = '';
     
     if(cityLightening) {
@@ -64,11 +62,7 @@ class CityWeatherListElement extends React.Component {
 
     // pm10 value categorize
     let pm10Class = '';
-    /* - 미세먼지
-          0~30   좋음
-          31~80  보통
-          81~150 나쁨
-          151~   매우나쁨 */
+    
     if(cityPM10Value < 31) {
       pm10Class = '좋음';
     }

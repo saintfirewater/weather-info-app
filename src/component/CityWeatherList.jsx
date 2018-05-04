@@ -1,7 +1,6 @@
 import React from 'react';
 import './CityWeatherList.css'
 import CityWeatherListElement from './CityWeatherListElement';
-// import { Map } from 'immutable';
 
 class CityWeatherList extends React.Component {
   constructor(props) {
@@ -15,11 +14,18 @@ class CityWeatherList extends React.Component {
       handleSearchAndInsert, 
       handleRemove,
       inputValue,
-      handleEnterKeyEvent
+      handleEnterKeyEvent,
+      handleRefreshButtonClick
     } = this.props;
 
     return (
-      <div id="myDIV" className="header">
+      <div id="myDIV" className="header" >
+        <button 
+          className="refresh_button"
+          onClick={handleRefreshButtonClick}
+        >
+          새로고침
+        </button>
         <h2 style={{margin:'5px'}}>Weather</h2>
         <input 
           onKeyPress={handleEnterKeyEvent}

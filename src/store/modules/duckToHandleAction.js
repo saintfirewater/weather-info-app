@@ -1,15 +1,14 @@
 import { List, Map } from 'immutable';
 import { createAction, handleActions } from 'redux-actions';
-// import { INSERT, REMOVE } from './actions';
+import getSearchResult from '../../utils/weatherAndPM10APIHandler';
 
 const INSERT = 'INSERT';
 const REMOVE = 'REMOVE';
-const CHANGE_WEATHER = 'CHANGE_WEATHER';
+const REFRESH = 'REFRESH';
 
 export const insert = createAction(INSERT, result => result);
 export const remove = createAction(REMOVE, id => id);
-export const changeWeather = createAction(CHANGE_WEATHER);
-
+export const refresh = createAction(REFRESH, arr => arr);
 
 let id = 0;
 let initialState = Map({
@@ -20,6 +19,7 @@ export default handleActions({
   [INSERT]: (state, action) => { 
     const newItem = Map({
       id: id++,
+      userInput: action.payload.userInput,
       cityName: action.payload.cityName, 
       cityTemperature: action.payload.cityTemperature,
       citySkyTypeCode: action.payload.citySkyTypeCode,
@@ -37,6 +37,14 @@ export default handleActions({
     const index = state.get('cityList').findIndex(item => item.get('id') === id);
 
     return state.deleteIn(['cityList', index]);
+  },
+  [REFRESH]: (state, action) => {
+    let arr = List(action.payload);
+
+    console.log('refresh');
+    console.log(arr);
+
+    return state.set('cityList', arr);
   }
 }, initialState);
 

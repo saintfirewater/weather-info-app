@@ -18,6 +18,7 @@ class SearchCityWeatherContainer extends React.Component {
     this.handleSearchAndInsert = this.handleSearchAndInsert.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
     this.handleEnterKeyEvent = this.handleEnterKeyEvent.bind(this);
+    this.handleRefreshButtonClick = this.handleRefreshButtonClick.bind(this);
   }
 
   handleInputChange(event) {
@@ -32,29 +33,34 @@ class SearchCityWeatherContainer extends React.Component {
 
     let result = '';
     getSearchResult(userInput)
-      .then((data) => ( data ))
-      .then((data) => {
+      .then(data => {
         result = data;
         
-        let city = result.city;
-        let temperature = result.currentTemperature;
-        let skyTypeCode = result.currentSkyTypeCode;
-        let rainTypeCode = result.currentRainTypeCode;
-        let lightening = result.currentLightening;
-        let pm10Value = result.currentPM10;
-        
-        let item = {
-          cityName: city.first + " " + city.second + " " + city.third,
-          cityTemperature: temperature,
-          citySkyTypeCode: skyTypeCode,
-          cityRainTypeCode: rainTypeCode,
-          cityLightening: lightening,
-          cityPM10Value: pm10Value
+        if(result === null) {
+          console.log('call it!');
+          alert('정확한 도시 명을 입력해주세요!');
         }
-        console.log('item');
-        console.log(item);
-        this.props.Actions.insert(item);
-
+        else {
+          let city = result.city;
+          let temperature = result.currentTemperature;
+          let skyTypeCode = result.currentSkyTypeCode;
+          let rainTypeCode = result.currentRainTypeCode;
+          let lightening = result.currentLightening;
+          let pm10Value = result.currentPM10;
+          
+          let item = {
+            userInput: userInput,
+            cityName: city.first + " " + city.second + " " + city.third,
+            cityTemperature: temperature,
+            citySkyTypeCode: skyTypeCode,
+            cityRainTypeCode: rainTypeCode,
+            cityLightening: lightening,
+            cityPM10Value: pm10Value
+          }
+          console.log('item');
+          console.log(item);
+          this.props.Actions.insert(item);
+        }
         this.setState({input: ''});
       });
   }
@@ -69,12 +75,49 @@ class SearchCityWeatherContainer extends React.Component {
     }
   }
   
+  handleRefreshButtonClick() {
+
+    if(JSON.stringify(this.props.cityList) === JSON.stringify('')) return ;
+
+    let promisesArr = this.props.cityList.map(async (city) => {
+      const nCity = await getSearchResult(city.userInput)
+      .then(result => {
+        let resultcity = result.city;
+        let temperature = result.currentTemperature;
+        let skyTypeCode = result.currentSkyTypeCode;
+        let rainTypeCode = result.currentRainTypeCode;
+        let lightening = result.currentLightening;
+        let pm10Value = result.currentPM10;
+        
+        let item = {
+          userInput: city.userInput,
+          cityName: resultcity.first + " " + resultcity.second + " " + resultcity.third,
+          cityTemperature: temperature,
+          citySkyTypeCode: skyTypeCode,
+          cityRainTypeCode: rainTypeCode,
+          cityLightening: lightening,
+          cityPM10Value: pm10Value
+        };
+        return item;
+      })
+      return nCity;
+    });
+
+    Promise.all(promisesArr)
+    .then(arr => {
+          console.log('arr');
+          console.log(arr);
+          this.props.Actions.refresh(arr);
+    });
+  }
+
   render() {
     const { 
       handleInputChange, 
       handleSearchAndInsert,
       handleRemove,
-      handleEnterKeyEvent
+      handleEnterKeyEvent,
+      handleRefreshButtonClick
     } = this;
 
     const {
@@ -89,6 +132,7 @@ class SearchCityWeatherContainer extends React.Component {
         handleSearchAndInsert={handleSearchAndInsert} 
         handleRemove={handleRemove}
         handleEnterKeyEvent={handleEnterKeyEvent}
+        handleRefreshButtonClick={handleRefreshButtonClick}
       />
     );
   }
@@ -96,7 +140,7 @@ class SearchCityWeatherContainer extends React.Component {
 
 export default connect(
   (state) => (
-    { cityList: state.duckToHandleAction.get('cityList').toJS() } 
+    { cityList: state.duckToHandleAction.get('cityList').toJS() }
   ),
   (dispatch) => (
     { Actions: bindActionCreators(Actions, dispatch) }
